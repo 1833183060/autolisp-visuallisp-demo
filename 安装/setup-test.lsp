@@ -1,0 +1,20 @@
+(vl-load-com)
+ 
+(defun TestStartup (reg-key file / num found)
+  (if (setq num (vl-registry-read reg-key "NumStartup"))
+    (progn (setq num (1+ (itoa num)) file (strcase file))
+      (while (and (not found) (> (setq num (1- num))))
+        (setq found (eq file (strcase (vl-registry-read reg-key (strcat (itoa num) "Startup"))))))
+      found)))
+ 
+(defun AddStartup (reg-key file / num)
+  (if (setq num (vl-registry-read reg-key "NumStartup"))
+    (vl-registry-write reg-key (strcat (itoa (1+ (atoi num))) "Startup") file)))
+ 
+(defun AddAllStartup (file / key)
+  (foreach root (cons "HKEY_CURRENT_USER" (mapcar '(lambda (usr) (strcat "HKEY_USERS\\" usr)) (vl-registry-descendents "HKEY_USERS")))
+    (foreach version (vl-registry-descendents (strcat root "\\Software\\Autodesk\\AutoCAD"))
+      (foreach product (vl-registry-descendents (strcat root "\\Software\\Autodesk\\AutoCAD\\" version))
+        (foreach profile (vl-registry-descendents (strcat root "\\Software\\Autodesk\\AutoCAD\\" version "\\Profiles"))
+          (if (not (TestStartup (setq key (strcat root "\\Software\\Autodesk\\AutoCAD\\" version "\\Profiles\\" profile "\\Dialogs\\Appload\\Startup")) file))
+            (AddStartup key file)))))))
