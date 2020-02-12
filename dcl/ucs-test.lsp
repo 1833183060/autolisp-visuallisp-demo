@@ -24,9 +24,7 @@
         (set_tile "axisRotateList" axisRotateList_value)
         (set_tile "moveValue" moveValue)
         (set_tile "rotateValue" rotateValue)
-    )
-
-    
+    )    
     
     (while continue
         

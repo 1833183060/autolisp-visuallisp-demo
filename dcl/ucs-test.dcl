@@ -1,6 +1,5 @@
 a:dialog{
-	label="ucs—› æ";
-	
+	label="ucs—› æ";	
 	
 	:row{
 		:popup_list{
